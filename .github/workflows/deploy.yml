@@ -32,16 +32,15 @@ jobs:
 
       - name: Build Stencil
         run: npm run build
-        env:
-          # Point UI at your deployed API — set this in GitHub repo secrets
-          VKYC_API_BASE: ${{ secrets.VKYC_API_BASE || 'http://localhost:3001/api/v1' }}
 
-      - name: Inject API base URL into built HTML
+      - name: Inject API base URL
         run: |
-          API_URL="${{ secrets.VKYC_API_BASE || 'http://localhost:3001/api/v1' }}"
-          # Inject window.__VKYC_API__ before </head> in the built index.html
+          API_URL="${{ secrets.VKYC_API_BASE }}"
+          if [ -z "$API_URL" ]; then
+            API_URL="http://localhost:3001/api/v1"
+          fi
           sed -i "s|</head>|<script>window.__VKYC_API__='${API_URL}';</script></head>|" www/index.html
-          echo "API URL injected: ${API_URL}"
+          echo "Injected API URL: ${API_URL}"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

@@ -14,6 +14,7 @@ export const config: Config = {
     {
       type: 'www',
       serviceWorker: null,
+      baseUrl: 'https://sayanch83.github.io/vkyc-work-ui/',
     },
   ],
   testing: {
