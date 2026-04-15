@@ -33,14 +33,19 @@ jobs:
       - name: Build Stencil
         run: npm run build
 
-      - name: Inject API base URL
+      - name: Show build output
+        run: ls -la www/ || echo "www/ not found"
+
+      - name: Inject API URL into built HTML
         run: |
           API_URL="${{ secrets.VKYC_API_BASE }}"
           if [ -z "$API_URL" ]; then
-            API_URL="http://localhost:3001/api/v1"
+            echo "No VKYC_API_BASE secret set, using localhost fallback"
+          else
+            find . -name "index.html" -path "*/www/*" -exec \
+              sed -i "s|http://localhost:3001/api/v1|${API_URL}|g" {} \;
+            echo "Injected API URL: ${API_URL}"
           fi
-          sed -i "s|</head>|<script>window.__VKYC_API__='${API_URL}';</script></head>|" www/index.html
-          echo "Injected API URL: ${API_URL}"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
