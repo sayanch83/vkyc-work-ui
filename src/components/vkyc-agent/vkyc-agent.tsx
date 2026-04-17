@@ -1,4 +1,4 @@
-aimport { Component, State, h, Fragment } from '@stencil/core';
+import { Component, State, h, Fragment } from '@stencil/core';
 import { QUESTIONNAIRE_ITEMS } from '../../utils/constants';
 import type { QuestionnaireMap } from '../../utils/constants';
 type Decision = 'approve'|'reject'|null;
