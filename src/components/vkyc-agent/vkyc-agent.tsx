@@ -3,12 +3,21 @@ import { QUESTIONNAIRE_ITEMS } from '../../utils/constants';
 import type { QuestionnaireMap } from '../../utils/constants';
 type Decision = 'approve'|'reject'|null;
 
+// Dynamic date helpers — always relative to today so eKYC status never stales
+const _d = (offsetDays: number): string => {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  return d.toISOString().slice(0, 10);
+};
+const VALID_DATE   = _d(-1);   // yesterday  → always within 3 days → VALID
+const EXPIRED_DATE = _d(-10);  // 10 days ago → always > 3 days     → EXPIRED
+
 const MOCK_CASES = [
-  { id:'KYC-A7B3X2C', name:'Harshit Sodagar', mobile:'98765 43210', appId:'CDL2847391', product:'Personal Loan', amount:300000, pan:'AWEPD1123P', dob:'02/08/1979', father:'Suresh Kumar', address:'B-204, Andheri West, Mumbai 400058', aadhaarDate:'2026-04-13', status:'in-queue', queuePos:1, waitMins:4, geo:{lat:19.1136,lng:72.8697,city:'Andheri West, Mumbai'}, preCheckLiveness:{score:94.2,passed:true,method:'ISO-30107-3-Passive',ts:'10:28 AM'} },
-  { id:'KYC-D4F9Z1K', name:'Priya Sharma',   mobile:'87654 32109', appId:'CDL9302841', product:'Two Wheeler Loan', amount:85000, pan:'BSKPR2341C', dob:'15/03/1992', father:'Ramesh Sharma', address:'Flat 12, Koramangala, Bangalore 560034', aadhaarDate:'2026-04-05', status:'in-queue', queuePos:2, waitMins:11, geo:{lat:12.9279,lng:77.6271,city:'Koramangala, Bangalore'}, preCheckLiveness:{score:91.7,passed:true,method:'ISO-30107-3-Passive',ts:'10:41 AM'} },
-  { id:'KYC-M2P7Y5R', name:'Anil Mehta',     mobile:'76543 21098', appId:'CDL5621034', product:'Credit Card', amount:150000, pan:'CFHME4512D', dob:'22/11/1985', father:'Kishore Mehta', address:'C-301, Sector 62, Noida 201309', aadhaarDate:'2026-04-05', status:'hold', queuePos:0, waitMins:0, geo:{lat:28.6271,lng:77.3655,city:'Sector 62, Noida'}, preCheckLiveness:{score:88.1,passed:true,method:'ISO-30107-3-Passive',ts:'09:15 AM'} },
-  { id:'KYC-R8T6W3N', name:'Sunita Patel',   mobile:'65432 10987', appId:'CDL4012837', product:'Home Loan', amount:2500000, pan:'DJGSP7823F', dob:'08/07/1978', father:'Vijay Patel', address:'Plot 45, Bopal, Ahmedabad 380058', aadhaarDate:'2026-04-13', status:'approved', queuePos:0, waitMins:0, geo:{lat:23.0225,lng:72.4114,city:'Bopal, Ahmedabad'}, preCheckLiveness:null },
-  { id:'KYC-H5V2K8B', name:'Rahul Joshi',    mobile:'54321 09876', appId:'CDL7823019', product:'Personal Loan', amount:50000, pan:'EKHPJ1290G', dob:'30/01/1990', father:'Girish Joshi', address:'Near Baner Road, Pune 411045', aadhaarDate:'2026-04-05', status:'rejected', queuePos:0, waitMins:0, geo:{lat:18.5590,lng:73.7868,city:'Baner, Pune'}, preCheckLiveness:null },
+  { id:'KYC-A7B3X2C', name:'Harshit Sodagar', mobile:'98765 43210', appId:'CDL2847391', product:'Personal Loan', amount:300000, pan:'AWEPD1123P', dob:'02/08/1979', father:'Suresh Kumar', address:'B-204, Andheri West, Mumbai 400058', aadhaarDate:VALID_DATE, status:'in-queue', queuePos:1, waitMins:4, geo:{lat:19.1136,lng:72.8697,city:'Andheri West, Mumbai'}, preCheckLiveness:{score:94.2,passed:true,method:'ISO-30107-3-Passive',ts:'10:28 AM'} },
+  { id:'KYC-D4F9Z1K', name:'Priya Sharma',   mobile:'87654 32109', appId:'CDL9302841', product:'Two Wheeler Loan', amount:85000, pan:'BSKPR2341C', dob:'15/03/1992', father:'Ramesh Sharma', address:'Flat 12, Koramangala, Bangalore 560034', aadhaarDate:EXPIRED_DATE, status:'in-queue', queuePos:2, waitMins:11, geo:{lat:12.9279,lng:77.6271,city:'Koramangala, Bangalore'}, preCheckLiveness:{score:91.7,passed:true,method:'ISO-30107-3-Passive',ts:'10:41 AM'} },
+  { id:'KYC-M2P7Y5R', name:'Anil Mehta',     mobile:'76543 21098', appId:'CDL5621034', product:'Credit Card', amount:150000, pan:'CFHME4512D', dob:'22/11/1985', father:'Kishore Mehta', address:'C-301, Sector 62, Noida 201309', aadhaarDate:EXPIRED_DATE, status:'hold', queuePos:0, waitMins:0, geo:{lat:28.6271,lng:77.3655,city:'Sector 62, Noida'}, preCheckLiveness:{score:88.1,passed:true,method:'ISO-30107-3-Passive',ts:'09:15 AM'} },
+  { id:'KYC-R8T6W3N', name:'Sunita Patel',   mobile:'65432 10987', appId:'CDL4012837', product:'Home Loan', amount:2500000, pan:'DJGSP7823F', dob:'08/07/1978', father:'Vijay Patel', address:'Plot 45, Bopal, Ahmedabad 380058', aadhaarDate:VALID_DATE, status:'approved', queuePos:0, waitMins:0, geo:{lat:23.0225,lng:72.4114,city:'Bopal, Ahmedabad'}, preCheckLiveness:null },
+  { id:'KYC-H5V2K8B', name:'Rahul Joshi',    mobile:'54321 09876', appId:'CDL7823019', product:'Personal Loan', amount:50000, pan:'EKHPJ1290G', dob:'30/01/1990', father:'Girish Joshi', address:'Near Baner Road, Pune 411045', aadhaarDate:EXPIRED_DATE, status:'rejected', queuePos:0, waitMins:0, geo:{lat:18.5590,lng:73.7868,city:'Baner, Pune'}, preCheckLiveness:null },
 ];
 
 @Component({ tag:'vkyc-agent', styleUrl:'vkyc-agent.css', shadow:true })
