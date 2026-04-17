@@ -530,3 +530,49 @@
 .tab { display: none; }
 .tab--locked { display: none; }
 .tab-lock { display: none; }
+
+/* ── Video feed panels in left sidebar ───────────────────── */
+.vid-cust {
+  flex: 0 0 160px;
+  background: linear-gradient(160deg, #0d1a2d, #1a2f5e);
+  position: relative; display: flex; align-items: center;
+  justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.vid-agent {
+  flex: 0 0 80px;
+  background: #0a121f;
+  position: relative; display: flex; align-items: center;
+  justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.vid-inner {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+}
+.vid-inner--agent { gap: 3px; }
+.vid-tag {
+  position: absolute; top: 7px; left: 8px;
+  background: rgba(26,47,94,0.88); color: #fff;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 20px; z-index: 2;
+}
+.vid-tag--right { left: auto; right: 8px; }
+.cust-av {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 800; color: rgba(255,255,255,0.4);
+}
+.agent-av-sm {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(211,140,27,0.25);
+  border: 2px solid rgba(211,140,27,0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.45);
+}
+.vid-sub {
+  font-size: 10px; color: rgba(255,255,255,0.3);
+  font-weight: 500; text-align: center;
+}
+.vid-sub--sm { font-size: 9px; }

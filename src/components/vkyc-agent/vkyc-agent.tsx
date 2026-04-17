@@ -1,4 +1,4 @@
-import { Component, State, h, Fragment } from '@stencil/core';
+aimport { Component, State, h, Fragment } from '@stencil/core';
 import { QUESTIONNAIRE_ITEMS } from '../../utils/constants';
 import type { QuestionnaireMap } from '../../utils/constants';
 type Decision = 'approve'|'reject'|null;
@@ -284,6 +284,24 @@ export class VkycAgent {
               <span class="sb-rec">● REC</span>
             </div>
             <div class="sb-geo">📍 {c.geo.city}</div>
+          </div>
+
+          {/* Customer video feed */}
+          <div class="vid-cust">
+            <div class="vid-tag">{c.name}</div>
+            <div class="vid-inner">
+              <div class="cust-av">{c.name.split(' ').map((w:string)=>w[0]).join('').slice(0,2)}</div>
+              <div class="vid-sub">Customer Feed</div>
+            </div>
+          </div>
+
+          {/* Agent PiP video */}
+          <div class="vid-agent">
+            <div class="vid-tag vid-tag--right">You · Agent Kumar</div>
+            <div class="vid-inner vid-inner--agent">
+              <div class="agent-av-sm">AK</div>
+              <div class="vid-sub vid-sub--sm">Your Feed</div>
+            </div>
           </div>
 
           {/* Quick actions */}
